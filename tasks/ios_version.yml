@@ -1,0 +1,21 @@
+---
+#
+# Query Cisco API as per: https://apiconsole.cisco.com/docs/ciscopsirt
+#
+- name: openVuln > Get oauth token for openVuln
+  uri:
+    url: https://cloudsso.cisco.com/as/token.oauth2
+    method: POST
+    body: "client_id={{ openVuln_client_id }}&client_secret={{ openVuln_client_secret }}&grant_type=client_credentials"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+  register: oauth
+
+- name: openVuln > Submit ios/iosxe version query
+  uri:
+    url: https://api.cisco.com/security/advisories/{{ lookup }}.json?version={{ version }}
+    method: GET
+    headers:
+      Authorization: "Bearer {{ oauth.json.access_token }}"
+  register: openVuln_ios_version
+

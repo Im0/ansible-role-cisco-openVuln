@@ -1,0 +1,12 @@
+---
+# tasks file for ansible-role-cisco-openVuln
+#
+- name: openVuln > hello API action
+  import_tasks: hello_api.yml
+  when: lookup == 'hello'
+
+- name: openVuln > IOS/IOS XE version check
+  import_tasks: ios_version.yml
+  when: 
+    - (lookup == 'ios') or (lookup == 'iosxe')
+    - version is defined

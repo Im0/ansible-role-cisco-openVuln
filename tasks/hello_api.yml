@@ -1,0 +1,20 @@
+---
+#
+# Testing Cisco API as per: https://apiconsole.cisco.com/docs/hello/apidocs
+#
+- name: hello API > Get oauth token
+  uri:
+    url: https://cloudsso.cisco.com/as/token.oauth2
+    method: POST
+    body: "client_id={{ helloAPI_client_id}}&client_secret={{ helloAPI_client_secret }}&grant_type=client_credentials"
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+  register: oauth
+
+- name: hello API > Submit query
+  uri:
+    url: https://api.cisco.com/hello
+    method: GET
+    headers:
+      Authorization: "Bearer {{ oauth.json.access_token }}"
+  register: hello
